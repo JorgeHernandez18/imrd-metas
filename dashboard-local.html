@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Institucional - Deportes e Infraestructura</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2"></script>
+    tooltip.callbacks
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+        
+        :root {
+            --rojo: #c10a20;
+            --negro: #030304;
+            --azul: #058ccd;
+            --verde: #089d2f;
+            --amarillo: #eec219;
+            --gris-claro: #f5f5f5;
+            --gris-medio: #e0e0e0;
+            --blanco: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            color: var(--negro);
+            overflow-x: hidden;
+        }
+        
+        .upload-section {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .upload-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--rojo);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .upload-card {
+            border: 3px dashed var(--azul);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(5, 140, 205, 0.05), rgba(8, 157, 47, 0.05));
+        }
+        
+        .upload-card:hover {
+            border-color: var(--verde);
+            background: linear-gradient(135deg, rgba(5, 140, 205, 0.1), rgba(8, 157, 47, 0.1));
+            transform: translateY(-5px);
+        }
+        
+        .upload-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--negro);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .upload-card p {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .upload-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--azul), var(--verde));
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(5, 140, 205, 0.3);
+        }
+        
+        .upload-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(5, 140, 205, 0.4);
+        }
+        
+        .file-status {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .file-status.success {
+            background: rgba(8, 157, 47, 0.1);
+            color: var(--verde);
+            border: 2px solid var(--verde);
+            display: block;
+        }
+        
+        .file-status.error {
+            background: rgba(193, 10, 32, 0.1);
+            color: var(--rojo);
+            border: 2px solid var(--rojo);
+            display: block;
+        }
+        
+        .load-button {
+            display: block;
+            width: 300px;
+            margin: 2rem auto;
+            padding: 1.2rem 2rem;
+            background: linear-gradient(135deg, var(--rojo), #950815);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(193, 10, 32, 0.3);
+        }
+        
+        .load-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(193, 10, 32, 0.4);
+        }
+        
+        .load-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        #dashboard {
+            display: none;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--rojo) 0%, #950815 100%);
+            color: white;
+            padding: 2.5rem 3rem;
+            box-shadow: 0 8px 32px rgba(193, 10, 32, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem 3rem;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 1rem 2rem;
+            border: none;
+            background: transparent;
+            color: var(--negro);
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, var(--azul) 0%, #0470a8 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(5, 140, 205, 0.3);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--azul), var(--verde), var(--amarillo));
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--azul), var(--verde));
+        }
+        
+        .card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .card-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--negro);
+            margin-bottom: 0.3rem;
+        }
+        
+        .card-subtitle {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .chart-container:hover {
+            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+        }
+        
+        .chart-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--negro);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .chart-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, var(--rojo), var(--azul));
+            border-radius: 2px;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, var(--negro) 0%, #1a1a1a 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        th:first-child {
+            border-radius: 12px 0 0 0;
+        }
+        
+        th:last-child {
+            border-radius: 0 12px 0 0;
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gris-medio);
+            font-size: 0.95rem;
+        }
+        
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+            transform: scale(1.01);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--gris-medio);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--verde), var(--azul));
+            border-radius: 6px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .status-success {
+            background: linear-gradient(135deg, var(--verde), #06c22d);
+            color: white;
+        }
+        
+        .status-warning {
+            background: linear-gradient(135deg, var(--amarillo), #f5d12a);
+            color: var(--negro);
+        }
+        
+        .status-danger {
+            background: linear-gradient(135deg, var(--rojo), #d60b25);
+            color: white;
+        }
+        
+        .link-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--azul), #0470a8);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .link-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(5, 140, 205, 0.4);
+        }
+        
+        .section-divider {
+            margin: 3rem 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        
+        .subsection-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--azul);
+        }
+        
+        .subsection-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--negro);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-divider {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--azul);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-section">
+        <h2>📁 Cargar Archivos Excel</h2>
+        <p style="color: #666; margin-bottom: 2rem;">Selecciona los dos archivos de Excel para generar el dashboard</p>
+        
+        <div class="upload-grid">
+            <div class="upload-card">
+                <h3>🏃 Archivo Deportes</h3>
+                <p>INFORME 1 CORTE_30 DE OCTUBRE_2025_DEPORTES.xlsx</p>
+                <div class="file-input-wrapper">
+                    <label class="upload-button">
+                        📤 Seleccionar Archivo
+                        <input type="file" id="deportes-file" accept=".xlsx,.xls" />
+                    </label>
+                </div>
+                <div class="file-status" id="deportes-status"></div>
+            </div>
+            
+            <div class="upload-card">
+                <h3>🏗️ Archivo Infraestructura</h3>
+                <p>INFORME 1 CORTE_30 DE OCTUBRE_2025 infra.xlsx</p>
+                <div class="file-input-wrapper">
+                    <label class="upload-button">
+                        📤 Seleccionar Archivo
+                        <input type="file" id="infra-file" accept=".xlsx,.xls" />
+                    </label>
+                </div>
+                <div class="file-status" id="infra-status"></div>
+            </div>
+        </div>
+        
+        <button class="load-button" id="load-dashboard" disabled>
+            🚀 Generar Dashboard
+        </button>
+    </div>
+    
+    <div id="dashboard">
+        <div class="header">
+            <h1>📊 Dashboard Institucional</h1>
+            <p>Monitoreo de Metas - Deportes e Infraestructura | Corte 30 de Octubre 2025</p>
+        </div>
+        
+        <div class="container">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('deportes')">🏃 Deportes</button>
+                <button class="tab" onclick="switchTab('infraestructura')">🏗️ Infraestructura</button>
+                <button class="tab" onclick="switchTab('consolidado')">📈 Consolidado</button>
+            </div>
+            
+            <!-- TAB DEPORTES -->
+            <div id="deportes" class="tab-content active">
+                <div class="summary-cards">
+                    <div class="card">
+                        <div class="card-icon" style="background: linear-gradient(135deg, var(--azul), #0470a8);">📊</div>
+                        <h3>Meta Total Programada</h3>
+                        <div class="card-value" id="deportes-meta-total">0</div>
+                        <div class="card-subtitle">Deportes</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon" style="background: linear-gradient(135deg, var(--verde), #06c22d);">✅</div>
+                        <h3>Total Acumulado</h3>
+                        <div class="card-value" id="deportes-acumulado-total">0</div>
+                        <div class="card-subtitle">Año 2025</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon" style="background: linear-gradient(135deg, var(--amarillo), #f5d12a); color: var(--negro);">🎯</div>
+                        <h3>Cumplimiento Promedio</h3>
+                        <div class="card-value" id="deportes-promedio">0%</div>
+                        <div class="card-subtitle">Todas las unidades</div>
+                    </div>
+                </div>
+                
+                <div class="section-divider">
+                    <div class="subsection-card" style="border-left-color: var(--rojo);">
+                        <div class="subsection-title">Unidad 209</div>
+                        <canvas id="chart-209"></canvas>
+                    </div>
+                    <div class="subsection-card" style="border-left-color: var(--verde);">
+                        <div class="subsection-title">Unidad 265</div>
+                        <canvas id="chart-265"></canvas>
+                    </div>
+                    <div class="subsection-card" style="border-left-color: var(--azul);">
+                        <div class="subsection-title">Unidad 208</div>
+                        <canvas id="chart-208"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-grid">
+                    <div class="chart-container">
+                        <h3 class="chart-title">Comparación por Unidad - Deportes</h3>
+                        <canvas id="chart-deportes-rango-alto"></canvas>
+                        <canvas id="chart-deportes-rango-bajo"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Cumplimiento de Metas (%)</h3>
+                        <canvas id="chart-deportes-cumplimiento"></canvas>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <h3 class="chart-title">Detalle por Programa - Deportes</h3>
+                    <table id="table-deportes">
+                        <thead>
+                            <tr>
+                                <th>Unidad</th>
+                                <th>Programa</th>
+                                <th>Meta Programada</th>
+                                <th>Acumulado</th>
+                                <th>Cumplimiento</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-deportes">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- TAB INFRAESTRUCTURA -->
+            <div id="infraestructura" class="tab-content">
+                <div class="summary-cards">
+                    <div class="card">
+                        <div class="card-icon" style="background: linear-gradient(135deg, var(--rojo), #950815);">📊</div>
+                        <h3>Meta Total Programada</h3>
+                        <div class="card-value" id="infra-meta-total">0</div>
+                        <div class="card-subtitle">Infraestructura</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon" style="background: linear-gradient(135deg, var(--verde), #06c22d);">✅</div>
+                        <h3>Total Acumulado</h3>
+                        <div class="card-value" id="infra-acumulado-total">0</div>
+                        <div class="card-subtitle">Año 2025</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon" style="background: linear-gradient(135deg, var(--amarillo), #f5d12a); color: var(--negro);">🎯</div>
+                        <h3>Cumplimiento Promedio</h3>
+                        <div class="card-value" id="infra-promedio">0%</div>
+                        <div class="card-subtitle">Todas las unidades</div>
+                    </div>
+                </div>
+                
+                <div class="section-divider">
+                    <div class="subsection-card" style="border-left-color: var(--rojo);">
+                        <div class="subsection-title">Unidad 207</div>
+                        <canvas id="chart-207"></canvas>
+                    </div>
+                    <div class="subsection-card" style="border-left-color: var(--verde);">
+                        <div class="subsection-title">Unidad 220</div>
+                        <canvas id="chart-220"></canvas>
+                    </div>
+                    <div class="subsection-card" style="border-left-color: var(--azul);">
+                        <div class="subsection-title">Unidad 201</div>
+                        <canvas id="chart-201"></canvas>
+                    </div>
+                </div>
+                
+                <div class="section-divider">
+                    <div class="subsection-card" style="border-left-color: var(--amarillo);">
+                        <div class="subsection-title">Unidad 214</div>
+                        <canvas id="chart-214"></canvas>
+                    </div>
+                    <div class="subsection-card" style="border-left-color: var(--rojo);">
+                        <div class="subsection-title">Unidad 217</div>
+                        <canvas id="chart-217"></canvas>
+                    </div>
+                    <div class="subsection-card" style="border-left-color: var(--verde);">
+                        <div class="subsection-title">Unidad 007</div>
+                        <canvas id="chart-007"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-grid">
+                    <div class="chart-container">
+                        <h3 class="chart-title">Comparación por Unidad - Infraestructura</h3>
+                        <!-- <canvas id="chart-infra-comparacion"></canvas> -->
+                        <canvas id="chart-infra-rango-alto"></canvas>
+                        <canvas id="chart-infra-rango-bajo"></canvas>
+                        
+                        
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Cumplimiento de Metas (%)</h3>
+                        <canvas id="chart-infra-cumplimiento"></canvas>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <h3 class="chart-title">Detalle por Programa - Infraestructura</h3>
+                    <table id="table-infra">
+                        <thead>
+                            <tr>
+                                <th>Unidad</th>
+                                <th>Programa</th>
+                                <th>Meta Programada</th>
+                                <th>Meta Acumulada</th>
+                                <th>Cumplimiento</th>
+                                <th>Estado</th>
+                                <th>Evidencias</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-infra">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- TAB CONSOLIDADO -->
+            <div id="consolidado" class="tab-content">
+                <div class="summary-cards">
+                    <div class="card">
+                        <div class="card-icon" style="background: linear-gradient(135deg, var(--negro), #333);">🎯</div>
+                        <h3>Meta Global Programada</h3>
+                        <div class="card-value" id="consolidado-meta-total">0</div>
+                        <div class="card-subtitle">Deportes + Infraestructura</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon" style="background: linear-gradient(135deg, var(--verde), #06c22d);">✅</div>
+                        <h3>Total Acumulado Global</h3>
+                        <div class="card-value" id="consolidado-acumulado-total">0</div>
+                        <div class="card-subtitle">Año 2025</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon" style="background: linear-gradient(135deg, var(--azul), #0470a8);">📊</div>
+                        <h3>Cumplimiento Global</h3>
+                        <div class="card-value" id="consolidado-promedio">0%</div>
+                        <div class="card-subtitle">Promedio institucional</div>
+                    </div>
+                </div>
+                
+                <div class="chart-grid">
+                    <div class="chart-container">
+                        <h3 class="chart-title">Deportes vs Infraestructura</h3>
+                        <canvas id="chart-consolidado-comparacion"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Distribución Global de Cumplimiento</h3>
+                        <canvas id="chart-consolidado-dona"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-grid">
+                    <div class="chart-container" style="grid-column: 1 / -1;">
+                        <h3 class="chart-title">Todas las Unidades - Vista General</h3>
+                        <canvas id="chart-consolidado-todas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const colors = {
+            rojo: '#c10a20',
+            negro: '#030304',
+            azul: '#058ccd',
+            verde: '#089d2f',
+            amarillo: '#eec219'
+        };
+
+        let deportesData = {};
+        let infraData = {};
+        let deportesLoaded = false;
+        let infraLoaded = false;
+
+        // Manejo de carga de archivos
+        document.getElementById('deportes-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                readExcelFile(file, 'deportes');
+            }
+        });
+
+        document.getElementById('infra-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                readExcelFile(file, 'infra');
+            }
+        });
+
+        function readExcelFile(file, tipo) {
+            const reader = new FileReader();
+            const statusEl = document.getElementById(`${tipo}-status`);
+            
+            statusEl.textContent = 'Cargando...';
+            statusEl.className = 'file-status';
+            statusEl.style.display = 'block';
+            
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    if (tipo === 'deportes') {
+                        procesarDeportes(workbook);
+                        deportesLoaded = true;
+                        statusEl.textContent = '✓ Archivo cargado correctamente';
+                        statusEl.className = 'file-status success';
+                    } else {
+                        procesarInfra(workbook);
+                        infraLoaded = true;
+                        statusEl.textContent = '✓ Archivo cargado correctamente';
+                        statusEl.className = 'file-status success';
+                    }
+                    
+                    // Habilitar botón si ambos archivos están cargados
+                    if (deportesLoaded && infraLoaded) {
+                        document.getElementById('load-dashboard').disabled = false;
+                    }
+                } catch (error) {
+                    statusEl.textContent = '✗ Error al procesar el archivo: ' + error.message;
+                    statusEl.className = 'file-status error';
+                }
+            };
+            
+            reader.onerror = function() {
+                statusEl.textContent = '✗ Error al leer el archivo';
+                statusEl.className = 'file-status error';
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+        function procesarDeportes(workbook) {
+            const hojas = ['209', '265', '208'];
+            deportesData = {};
+            
+            hojas.forEach(hoja => {
+                if (workbook.SheetNames.includes(hoja)) {
+                    const worksheet = workbook.Sheets[hoja];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                    
+                    deportesData[hoja] = jsonData.map(row => {
+                        // Buscar las columnas independientemente de mayúsculas/minúsculas
+                        const programa = row['PROGRAMA'] || row['Programa'] || row['programa'] || '';
+                        const metaProgramada = parseInt(row['META PROGRAMADA'] || row['Meta Programada'] || row['meta programada'] || 0);
+                        const totalAcumulado = parseInt(row['TOTAL ACUMULADO AÑO'] || row['Total Acumulado Año'] || row['total acumulado año'] || 0);
+                        let metaPorcentaje = parseFloat(row['META %'] || row['Meta %'] || row['meta %'] || 0);
+                        
+                        // Si el porcentaje está en decimal (0.9), convertir a porcentaje (90)
+                        if (metaPorcentaje < 1 && metaPorcentaje > 0) {
+                            metaPorcentaje = metaPorcentaje * 100;
+                        }
+                        
+                        return {
+                            programa: programa,
+                            metaProgramada: metaProgramada,
+                            totalAcumulado: totalAcumulado,
+                            metaPorcentaje: parseFloat(metaPorcentaje.toFixed(1))
+                        };
+                    });
+                }
+            });
+        }
+
+        function procesarInfra(workbook) {
+            const hojas = ['207', '220', '201', '214', '217', '007'];
+            infraData = {};
+            
+            hojas.forEach(hoja => {
+                if (workbook.SheetNames.includes(hoja)) {
+                    const worksheet = workbook.Sheets[hoja];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                    
+                    infraData[hoja] = jsonData.map(row => {
+                        const programa = row['PROGRAMA'] || row['Programa'] || row['programa'] || '';
+                        const metaProgramada = parseInt(row['META PROGRAMADA'] || row['Meta Programada'] || row['meta programada'] || 0);
+                        const totalMetaAcumulada = parseInt(row['TOTAL META ACUMULADA'] || row['Total Meta Acumulada'] || row['total meta acumulada'] || 0);
+                        let metaPorcentaje = parseFloat(row['META %'] || row['Meta %'] || row['meta %'] || 0);
+                        const link = row['LINK DE ACCESO DRIVE( EVIDENCIAS)'] || row['Link de acceso drive'] || row['link'] || '#';
+                        
+                        if (metaPorcentaje < 1 && metaPorcentaje > 0) {
+                            metaPorcentaje = metaPorcentaje * 100;
+                        }
+                        
+                        return {
+                            programa: programa,
+                            metaProgramada: metaProgramada,
+                            totalMetaAcumulada: totalMetaAcumulada,
+                            metaPorcentaje: parseFloat(metaPorcentaje.toFixed(1)),
+                            link: link
+                        };
+                    });
+                }
+            });
+        }
+
+        document.getElementById('load-dashboard').addEventListener('click', function() {
+            document.querySelector('.upload-section').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            inicializarDashboard();
+        });
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function getStatusBadge(percentage) {
+            if (percentage >= 95) {
+                return '<span class="status-badge status-success">Excelente</span>';
+            } else if (percentage >= 85) {
+                return '<span class="status-badge status-warning">En progreso</span>';
+            } else {
+                return '<span class="status-badge status-danger">Requiere atención</span>';
+            }
+        }
+
+        function calcularTotalesDeportes() {
+            let metaTotal = 0;
+            let acumuladoTotal = 0;
+            let totalRegistros = 0;
+            let sumaPromedios = 0;
+
+            Object.values(deportesData).forEach(unidad => {
+                unidad.forEach(item => {
+                    metaTotal += item.metaProgramada;
+                    acumuladoTotal += item.totalAcumulado;
+                    sumaPromedios += item.metaPorcentaje;
+                    totalRegistros++;
+                });
+            });
+
+            const promedio = (sumaPromedios / totalRegistros).toFixed(1);
+
+            document.getElementById('deportes-meta-total').textContent = metaTotal.toLocaleString();
+            document.getElementById('deportes-acumulado-total').textContent = acumuladoTotal.toLocaleString();
+            document.getElementById('deportes-promedio').textContent = promedio + '%';
+        }
+
+        function calcularTotalesInfra() {
+            let metaTotal = 0;
+            let acumuladoTotal = 0;
+            let totalRegistros = 0;
+            let sumaPromedios = 0;
+
+            Object.values(infraData).forEach(unidad => {
+                unidad.forEach(item => {
+                    metaTotal += item.metaProgramada;
+                    acumuladoTotal += item.totalMetaAcumulada;
+                    sumaPromedios += item.metaPorcentaje;
+                    totalRegistros++;
+                });
+            });
+
+            const promedio = (sumaPromedios / totalRegistros).toFixed(1);
+
+            document.getElementById('infra-meta-total').textContent = metaTotal.toLocaleString();
+            document.getElementById('infra-acumulado-total').textContent = acumuladoTotal.toLocaleString();
+            document.getElementById('infra-promedio').textContent = promedio + '%';
+        }
+
+        function calcularConsolidado() {
+            const deportesMeta = parseInt(document.getElementById('deportes-meta-total').textContent.replace(/,/g, ''));
+            const deportesAcum = parseInt(document.getElementById('deportes-acumulado-total').textContent.replace(/,/g, ''));
+            const deportesProm = parseFloat(document.getElementById('deportes-promedio').textContent);
+
+            const infraMeta = parseInt(document.getElementById('infra-meta-total').textContent.replace(/,/g, ''));
+            const infraAcum = parseInt(document.getElementById('infra-acumulado-total').textContent.replace(/,/g, ''));
+            const infraProm = parseFloat(document.getElementById('infra-promedio').textContent);
+
+            const metaTotal = deportesMeta + infraMeta;
+            const acumTotal = deportesAcum + infraAcum;
+            const promTotal = ((deportesProm + infraProm) / 2).toFixed(1);
+
+            document.getElementById('consolidado-meta-total').textContent = metaTotal.toLocaleString();
+            document.getElementById('consolidado-acumulado-total').textContent = acumTotal.toLocaleString();
+            document.getElementById('consolidado-promedio').textContent = promTotal + '%';
+        }
+
+        function llenarTablaDeportes() {
+            const tbody = document.getElementById('tbody-deportes');
+            tbody.innerHTML = '';
+
+            Object.keys(deportesData).forEach(unidad => {
+                deportesData[unidad].forEach(item => {
+                    const row = `
+                        <tr>
+                            <td><strong>${unidad}</strong></td>
+                            <td>${item.programa}</td>
+                            <td>${item.metaProgramada.toLocaleString()}</td>
+                            <td>${item.totalAcumulado.toLocaleString()}</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${item.metaPorcentaje}%"></div>
+                                </div>
+                                <small>${item.metaPorcentaje}%</small>
+                            </td>
+                            <td>${getStatusBadge(item.metaPorcentaje)}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            });
+        }
+
+        function llenarTablaInfra() {
+            const tbody = document.getElementById('tbody-infra');
+            tbody.innerHTML = '';
+
+            Object.keys(infraData).forEach(unidad => {
+                infraData[unidad].forEach(item => {
+                    const row = `
+                        <tr>
+                            <td><strong>${unidad}</strong></td>
+                            <td>${item.programa}</td>
+                            <td>${item.metaProgramada.toLocaleString()}</td>
+                            <td>${item.totalMetaAcumulada.toLocaleString()}</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${item.metaPorcentaje}%"></div>
+                                </div>
+                                <small>${item.metaPorcentaje}%</small>
+                            </td>
+                            <td>${getStatusBadge(item.metaPorcentaje)}</td>
+                            <td><a href="${item.link}" target="_blank" class="link-button">📁 Ver Evidencias</a></td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            });
+        }
+
+        function crearGraficosDeportesIndividuales() {
+            ['209', '265', '208'].forEach(unidad => {
+                const data = deportesData[unidad];
+
+                const valores = data.map(item => item.metaPorcentaje);
+                const maxValor = Math.max(...valores);
+                const maxEjeY = Math.ceil(maxValor / 10) * 12;
+
+                const ctx = document.getElementById(`chart-${unidad}`).getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(item => item.programa.substring(0, 15)),
+                        datasets: [{
+                            label: 'Cumplimiento %',
+                            data: valores,
+                            backgroundColor: colors.azul,
+                            borderRadius: 6,
+                            barPercentage: 0.7,
+                            categoryPercentage: 0.7
+                        }]
+                    },
+                    plugins: [ChartDataLabels],
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: false },
+
+                            annotation: {
+                                annotations: {
+                                    lineaMeta: {
+                                        type: 'line',
+                                        yMin: 100,
+                                        yMax: 100,
+                                        borderColor: '#FF6B6B',
+                                        borderWidth: 2,
+                                        borderDash: [6, 6],
+                                        label: {
+                                            enabled: true,
+                                            content: 'Meta 100%',
+                                            position: 'end'
+                                        }
+                                    }
+                                }
+                            },
+
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'end',
+                                offset: (context) => {
+                                    const value = context.dataset.data[context.dataIndex];
+                                    return value > 100 ? 6 : 4;
+                                },
+                                color: '#444',
+                                font: {
+                                    size: 9,
+                                    weight: 'bold'
+                                },
+                                formatter: (value) => `${value}%`,
+                                clamp: true
+                            },
+
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => ctx.parsed.y + '%'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: maxEjeY,
+                                ticks: {
+                                    font: { size: 9 },
+                                    callback: value => value + '%'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: { size: 9 },
+                                    maxRotation: 0,
+                                    autoSkip: true
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+
+
+        function crearGraficosInfraIndividuales() {
+            ['207', '220', '201', '214', '217', '007'].forEach(unidad => {
+                const data = infraData[unidad];
+                const valores = data.map(item => item.metaPorcentaje);
+                const maxValor = Math.max(...valores);
+                const maxEjeY = Math.ceil(maxValor / 10) * 12;
+
+                const ctx = document.getElementById(`chart-${unidad}`).getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(item => item.programa.substring(0, 15)),
+                        datasets: [{
+                            label: 'Cumplimiento %',
+                            data: valores,
+                            backgroundColor: colors.azul,
+                            borderRadius: 6,
+                            barPercentage: 0.7,
+                            categoryPercentage: 0.7
+                        }]
+                    },
+                    plugins: [ChartDataLabels],
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: false },
+
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'end',
+                                offset: (context) => {
+                                    const value = context.dataset.data[context.dataIndex];
+                                    return value > 100 ? 6 : 4;
+                                },
+                                color: '#444',
+                                font: {
+                                    size: 9,
+                                    weight: 'bold'
+                                },
+                                formatter: (value) => `${value}%`,
+                                clamp: true
+                            },
+
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => ctx.parsed.y + '%'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: maxEjeY,
+                                ticks: {
+                                    font: { size: 9 },
+                                    callback: value => value + '%'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: { size: 9 },
+                                    maxRotation: 0,
+                                    autoSkip: true
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        function crearGraficosComparacionDeportes() {
+        const UMBRAL = 70000;
+
+        const unidades = Object.keys(deportesData).map(u => {
+            const meta = deportesData[u].reduce((sum, i) => sum + i.metaProgramada, 0);
+            const acumulado = deportesData[u].reduce((sum, i) => sum + i.totalAcumulado, 0);
+
+            return {
+                unidad: u,
+                meta,
+                acumulado
+            };
+        });
+
+        const rangoAlto = unidades.filter(u => 
+            u.meta > UMBRAL || u.acumulado > UMBRAL
+        );
+
+        const rangoBajo = unidades.filter(u => 
+            u.meta <= UMBRAL && u.acumulado <= UMBRAL
+        );
+
+        // Gráfico rango alto
+        crearGraficoBar(
+            'chart-deportes-rango-alto',
+            rangoAlto.map(u => u.unidad),
+            rangoAlto.map(u => u.meta),
+            rangoAlto.map(u => u.acumulado),
+            'Comparación Deportes – Rangos Altos'
+        );
+
+        // Gráfico rango bajo
+        crearGraficoBar(
+            'chart-deportes-rango-bajo',
+            rangoBajo.map(u => u.unidad),
+            rangoBajo.map(u => u.meta),
+            rangoBajo.map(u => u.acumulado),
+            'Comparación Deportes – Rangos Bajos'
+        );
+        }
+
+        function crearGraficoBar(ctxId, labels, metas, acumulados, titulo) {
+        const ctx = document.getElementById(ctxId).getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Meta Programada',
+                        data: metas,
+                        backgroundColor: colors.azul,
+                        borderRadius: 8
+                    },
+                    {
+                        label: 'Total Acumulado',
+                        data: acumulados,
+                        backgroundColor: colors.verde,
+                        borderRadius: 8
+                    }
+                ]
+            },
+            plugins: [ChartDataLabels],
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: {
+                        display: true,
+                        text: titulo
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        offset: 4,
+                        color: '#333',
+                        font: {
+                            weight: 'bold',
+                            size: 11
+                        },
+                        formatter: (value) => {
+                            return value.toLocaleString('es-CO');
+                        }
+                    }
+                }
+            }
+        });
+        }
+
+        function crearGraficoCumplimientoDeportes() {
+            const unidades = Object.keys(deportesData);
+            const promedios = unidades.map(u => {
+                const items = deportesData[u];
+                const suma = items.reduce((sum, item) => sum + item.metaPorcentaje, 0);
+                //return (suma / items.length).toFixed(1);
+                return suma;
+            });
+
+            const ctx = document.getElementById('chart-deportes-cumplimiento').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: unidades,
+                    datasets: [{
+                        data: promedios,
+                        backgroundColor: [colors.rojo, colors.verde, colors.amarillo],
+                        borderWidth: 0
+                    }]
+                },
+                plugins: [ChartDataLabels],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        datalabels: {
+                        anchor: 'center',
+                        align: 'center',
+                        offset: 4,
+                        color: '#000',
+                        font: {
+                            weight: 'bold',
+                            size: 11
+                        },
+                        formatter: (value) => {
+                            return value.toLocaleString('es-CO');
+                        }
+                    }
+                    }
+                }
+            });
+        }
+
+        
+
+
+        /* function crearGraficoComparacionInfra() {
+            const unidades = Object.keys(infraData);
+            const metasProgramadas = unidades.map(u => 
+                infraData[u].reduce((sum, item) => sum + item.metaProgramada, 0)
+            );
+            const totalesAcumulados = unidades.map(u => 
+                infraData[u].reduce((sum, item) => sum + item.totalMetaAcumulada, 0)
+            );
+
+            const ctx = document.getElementById('chart-infra-comparacion').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: unidades,
+                    datasets: [
+                        {
+                            label: 'Meta Programada',
+                            data: metasProgramadas,
+                            backgroundColor: colors.rojo,
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Meta Acumulada',
+                            data: totalesAcumulados,
+                            backgroundColor: colors.verde,
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        } */
+
+        function crearGraficoComparacionInfra() {
+        const UMBRAL = 100;
+
+        const unidades = Object.keys(infraData).map(u => {
+            const meta = infraData[u].reduce((sum, i) => sum + parseFloat(i.metaProgramada), 0);
+            const acumulado = infraData[u].reduce((sum, i) => sum + parseFloat(i.totalMetaAcumulada), 0);
+
+            return {
+                unidad: u,
+                meta,
+                acumulado
+            };
+        });
+
+        const rangoAlto = unidades.filter(u => 
+            u.meta > UMBRAL || u.acumulado > UMBRAL
+        );
+
+        const rangoBajo = unidades.filter(u => 
+            u.meta <= UMBRAL && u.acumulado <= UMBRAL
+        );
+
+        // Gráfico rango alto
+        crearGraficoBar(
+            'chart-infra-rango-alto',
+            rangoAlto.map(u => u.unidad),
+            rangoAlto.map(u => u.meta),
+            rangoAlto.map(u => u.acumulado),
+            'Comparación Infraestructura – Rangos Altos'
+        );
+
+        // Gráfico rango bajo
+        crearGraficoBar(
+            'chart-infra-rango-bajo',
+            rangoBajo.map(u => u.unidad),
+            rangoBajo.map(u => u.meta),
+            rangoBajo.map(u => u.acumulado),
+            'Comparación Infraestructura – Rangos Bajos'
+        );
+        }
+
+
+        function crearGraficoCumplimientoInfra() {
+            const unidades = Object.keys(infraData);
+
+            const promedios = [];
+            const sumas = [];
+
+            // Calcular suma y promedio por unidad
+            unidades.forEach(u => {
+                const items = infraData[u] || [];
+                const suma = items.reduce((sum, item) => sum + item.metaPorcentaje, 0);
+
+                sumas.push(suma);
+                promedios.push(items.length > 0 ? Number((suma / items.length).toFixed(1)) : 0);
+            });
+
+            const ctx = document
+                .getElementById('chart-infra-cumplimiento')
+                .getContext('2d');
+
+            new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: unidades,
+                    datasets: [{
+                        data: promedios,
+                        sumas: sumas, // 👈 propiedad personalizada para el tooltip
+                        backgroundColor: [
+                            colors.rojo,
+                            colors.verde,
+                            colors.azul,
+                            colors.amarillo,
+                            '#444',
+                            '#ff6b6b'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                plugins: [ChartDataLabels],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+
+                        // Valores visibles dentro del área
+                        datalabels: {
+                            anchor: 'center',
+                            align: 'center',
+                            offset: 4,
+                            color: '#000',
+                            font: {
+                                weight: 'bold',
+                                size: 11
+                            },
+                            formatter: value => `${value}%`
+                        },
+
+                        // Tooltip personalizado
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                title: (tooltipItems) => {
+                                    return `Unidad ${tooltipItems[0].label}`;
+                                },
+                                label: (context) => {
+                                    return `Cumplimiento promedio: ${context.raw}%`;
+                                },
+                                afterLabel: (context) => {
+                                    const suma = context.dataset.sumas[context.dataIndex];
+                                    return `Suma total: ${suma.toLocaleString('es-CO')}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        function crearGraficosConsolidados() {
+            const deportesMeta = parseInt(document.getElementById('deportes-meta-total').textContent.replace(/,/g, ''));
+            const deportesAcum = parseInt(document.getElementById('deportes-acumulado-total').textContent.replace(/,/g, ''));
+            const infraMeta = parseInt(document.getElementById('infra-meta-total').textContent.replace(/,/g, ''));
+            const infraAcum = parseInt(document.getElementById('infra-acumulado-total').textContent.replace(/,/g, ''));
+
+            const ctx1 = document.getElementById('chart-consolidado-comparacion').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Deportes', 'Infraestructura'],
+                    datasets: [
+                        {
+                            label: 'Meta Programada',
+                            data: [deportesMeta, infraMeta],
+                            backgroundColor: colors.azul,
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Total Acumulado',
+                            data: [deportesAcum, infraAcum],
+                            backgroundColor: colors.verde,
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+
+            const ctx2 = document.getElementById('chart-consolidado-dona').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Deportes', 'Infraestructura'],
+                    datasets: [{
+                        data: [deportesAcum, infraAcum],
+                        backgroundColor: [colors.azul, colors.rojo],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            const todasUnidades = [...Object.keys(deportesData), ...Object.keys(infraData)];
+            const todasMetasAcumuladas = [
+                ...Object.keys(deportesData).map(u => 
+                    deportesData[u].reduce((sum, item) => sum + item.totalAcumulado, 0)
+                ),
+                ...Object.keys(infraData).map(u => 
+                    infraData[u].reduce((sum, item) => sum + item.totalMetaAcumulada, 0)
+                )
+            ];
+
+            const ctx3 = document.getElementById('chart-consolidado-todas').getContext('2d');
+            new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: todasUnidades,
+                    datasets: [{
+                        label: 'Total Acumulado por Unidad',
+                        data: todasMetasAcumuladas,
+                        backgroundColor: [
+                            colors.azul,
+                            colors.verde,
+                            colors.amarillo,
+                            colors.rojo,
+                            colors.negro,
+                            '#ff6b6b',
+                            '#4ecdc4',
+                            '#95e1d3',
+                            '#f38181'
+                        ],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function inicializarDashboard() {
+            calcularTotalesDeportes();
+            calcularTotalesInfra();
+            calcularConsolidado();
+            
+            llenarTablaDeportes();
+            llenarTablaInfra();
+            
+            crearGraficosDeportesIndividuales();
+            crearGraficosInfraIndividuales();
+            
+            crearGraficosComparacionDeportes();
+            crearGraficoCumplimientoDeportes();
+            
+            crearGraficoComparacionInfra();
+            crearGraficoCumplimientoInfra();
+            
+            crearGraficosConsolidados();
+        }
+    </script>
+</body>
+</html>
