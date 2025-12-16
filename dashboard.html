@@ -1069,7 +1069,9 @@
             ['209', '265', '208'].forEach(unidad => {
                 const data = deportesData[unidad];
 
+                const celdas = data.map(item => item.totalAcumulado); // 👈 valor oculto
                 const valores = data.map(item => item.metaPorcentaje);
+
                 const maxValor = Math.max(...valores);
                 const maxEjeY = Math.ceil(maxValor / 10) * 12;
 
@@ -1082,6 +1084,7 @@
                         datasets: [{
                             label: 'Cumplimiento %',
                             data: valores,
+                            celdas: celdas, // 👈 PROPIEDAD PERSONALIZADA
                             backgroundColor: colors.azul,
                             borderRadius: 6,
                             barPercentage: 0.7,
@@ -1125,13 +1128,23 @@
                                     size: 9,
                                     weight: 'bold'
                                 },
-                                formatter: (value) => `${value}%`,
+                                formatter: value => `${value}%`,
                                 clamp: true
                             },
 
+                            // 🎯 TOOLTIP PERSONALIZADO
                             tooltip: {
                                 callbacks: {
-                                    label: ctx => ctx.parsed.y + '%'
+                                    title: (items) => {
+                                        return items[0].label;
+                                    },
+                                    label: (context) => {
+                                        return `Cumplimiento: ${context.parsed.y}%`;
+                                    },
+                                    afterLabel: (context) => {
+                                        const celda = context.dataset.celdas[context.dataIndex];
+                                        return `Total acumulado: ${celda.toLocaleString('es-CO')}`;
+                                    }
                                 }
                             }
                         },
@@ -1159,10 +1172,14 @@
 
 
 
+
         function crearGraficosInfraIndividuales() {
             ['207', '220', '201', '214', '217', '007'].forEach(unidad => {
                 const data = infraData[unidad];
+
                 const valores = data.map(item => item.metaPorcentaje);
+                const celdas = data.map(item => item.totalMetaAcumulada); // 👈 valor oculto
+
                 const maxValor = Math.max(...valores);
                 const maxEjeY = Math.ceil(maxValor / 10) * 12;
 
@@ -1175,6 +1192,7 @@
                         datasets: [{
                             label: 'Cumplimiento %',
                             data: valores,
+                            celdas: celdas, // 👈 propiedad personalizada
                             backgroundColor: colors.azul,
                             borderRadius: 6,
                             barPercentage: 0.7,
@@ -1200,13 +1218,23 @@
                                     size: 9,
                                     weight: 'bold'
                                 },
-                                formatter: (value) => `${value}%`,
+                                formatter: value => `${value}%`,
                                 clamp: true
                             },
 
+                            // 🎯 TOOLTIP PERSONALIZADO
                             tooltip: {
                                 callbacks: {
-                                    label: ctx => ctx.parsed.y + '%'
+                                    title: (items) => {
+                                        return items[0].label;
+                                    },
+                                    label: (context) => {
+                                        return `Cumplimiento: ${context.parsed.y}%`;
+                                    },
+                                    afterLabel: (context) => {
+                                        const celda = context.dataset.celdas[context.dataIndex];
+                                        return `Total acumulado: ${celda.toLocaleString('es-CO')}`;
+                                    }
                                 }
                             }
                         },
@@ -1232,8 +1260,9 @@
             });
         }
 
+
         function crearGraficosComparacionDeportes() {
-        const UMBRAL = 70000;
+        const UMBRAL = 50000;
 
         const unidades = Object.keys(deportesData).map(u => {
             const meta = deportesData[u].reduce((sum, i) => sum + i.metaProgramada, 0);
@@ -1325,21 +1354,37 @@
 
         function crearGraficoCumplimientoDeportes() {
             const unidades = Object.keys(deportesData);
-            const promedios = unidades.map(u => {
-                const items = deportesData[u];
+
+            const promedios = [];
+            const sumas = [];
+
+            // Calcular suma y promedio por unidad
+            unidades.forEach(u => {
+                const items = deportesData[u] || [];
                 const suma = items.reduce((sum, item) => sum + item.metaPorcentaje, 0);
-                return (suma / items.length).toFixed(1);
-                //return suma;
+
+                sumas.push(suma);
+                promedios.push(
+                    items.length > 0 ? Number((suma / items.length).toFixed(1)) : 0
+                );
             });
 
-            const ctx = document.getElementById('chart-deportes-cumplimiento').getContext('2d');
+            const ctx = document
+                .getElementById('chart-deportes-cumplimiento')
+                .getContext('2d');
+
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: unidades,
                     datasets: [{
                         data: promedios,
-                        backgroundColor: [colors.rojo, colors.verde, colors.amarillo],
+                        sumas: sumas, // 👈 propiedad personalizada
+                        backgroundColor: [
+                            colors.rojo,
+                            colors.verde,
+                            colors.amarillo
+                        ],
                         borderWidth: 0
                     }]
                 },
@@ -1351,23 +1396,41 @@
                         legend: {
                             position: 'top'
                         },
+
+                        // Valores visibles dentro del doughnut
                         datalabels: {
-                        anchor: 'center',
-                        align: 'center',
-                        offset: 4,
-                        color: '#000',
-                        font: {
-                            weight: 'bold',
-                            size: 11
+                            anchor: 'center',
+                            align: 'center',
+                            offset: 4,
+                            color: '#000',
+                            font: {
+                                weight: 'bold',
+                                size: 11
+                            },
+                            formatter: value => `${value}%`
                         },
-                        formatter: (value) => {
-                            return value.toLocaleString('es-CO');
+
+                        // Tooltip reutilizado (misma lógica que Infra)
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                title: (tooltipItems) => {
+                                    return `Unidad ${tooltipItems[0].label}`;
+                                },
+                                label: (context) => {
+                                    return `Cumplimiento promedio: ${context.raw}%`;
+                                },
+                                afterLabel: (context) => {
+                                    const suma = context.dataset.sumas[context.dataIndex];
+                                    return `Suma total: ${suma.toLocaleString('es-CO')}%`;
+                                }
+                            }
                         }
-                    }
                     }
                 }
             });
         }
+
 
         
 
