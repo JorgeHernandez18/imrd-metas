@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2"></script>
-    tooltip.callbacks
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
         
@@ -1329,8 +1328,8 @@
             const promedios = unidades.map(u => {
                 const items = deportesData[u];
                 const suma = items.reduce((sum, item) => sum + item.metaPorcentaje, 0);
-                //return (suma / items.length).toFixed(1);
-                return suma;
+                return (suma / items.length).toFixed(1);
+                //return suma;
             });
 
             const ctx = document.getElementById('chart-deportes-cumplimiento').getContext('2d');
@@ -1457,84 +1456,84 @@
 
 
         function crearGraficoCumplimientoInfra() {
-            const unidades = Object.keys(infraData);
+        const unidades = Object.keys(infraData);
 
-            const promedios = [];
-            const sumas = [];
+        const promedios = [];
+        const sumas = [];
 
-            // Calcular suma y promedio por unidad
-            unidades.forEach(u => {
-                const items = infraData[u] || [];
-                const suma = items.reduce((sum, item) => sum + item.metaPorcentaje, 0);
+        // Calcular suma y promedio por unidad
+        unidades.forEach(u => {
+            const items = infraData[u] || [];
+            const suma = items.reduce((sum, item) => sum + item.metaPorcentaje, 0);
 
-                sumas.push(suma);
-                promedios.push(items.length > 0 ? Number((suma / items.length).toFixed(1)) : 0);
-            });
+            sumas.push(suma);
+            promedios.push(items.length > 0 ? Number((suma / items.length).toFixed(1)) : 0);
+        });
 
-            const ctx = document
-                .getElementById('chart-infra-cumplimiento')
-                .getContext('2d');
+        const ctx = document
+            .getElementById('chart-infra-cumplimiento')
+            .getContext('2d');
 
-            new Chart(ctx, {
-                type: 'polarArea',
-                data: {
-                    labels: unidades,
-                    datasets: [{
-                        data: promedios,
-                        sumas: sumas, // 👈 propiedad personalizada para el tooltip
-                        backgroundColor: [
-                            colors.rojo,
-                            colors.verde,
-                            colors.azul,
-                            colors.amarillo,
-                            '#444',
-                            '#ff6b6b'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                plugins: [ChartDataLabels],
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
+        new Chart(ctx, {
+            type: 'polarArea',
+            data: {
+                labels: unidades,
+                datasets: [{
+                    data: promedios,
+                    sumas: sumas, // 👈 propiedad personalizada para el tooltip
+                    backgroundColor: [
+                        colors.rojo,
+                        colors.verde,
+                        colors.azul,
+                        colors.amarillo,
+                        '#444',
+                        '#ff6b6b'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            plugins: [ChartDataLabels],
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+
+                    // Valores visibles dentro del área
+                    datalabels: {
+                        anchor: 'center',
+                        align: 'center',
+                        offset: 4,
+                        color: '#000',
+                        font: {
+                            weight: 'bold',
+                            size: 11
                         },
+                        formatter: value => `${value}%`
+                    },
 
-                        // Valores visibles dentro del área
-                        datalabels: {
-                            anchor: 'center',
-                            align: 'center',
-                            offset: 4,
-                            color: '#000',
-                            font: {
-                                weight: 'bold',
-                                size: 11
+                    // Tooltip personalizado
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            title: (tooltipItems) => {
+                                return `Unidad ${tooltipItems[0].label}`;
                             },
-                            formatter: value => `${value}%`
-                        },
-
-                        // Tooltip personalizado
-                        tooltip: {
-                            enabled: true,
-                            callbacks: {
-                                title: (tooltipItems) => {
-                                    return `Unidad ${tooltipItems[0].label}`;
-                                },
-                                label: (context) => {
-                                    return `Cumplimiento promedio: ${context.raw}%`;
-                                },
-                                afterLabel: (context) => {
-                                    const suma = context.dataset.sumas[context.dataIndex];
-                                    return `Suma total: ${suma.toLocaleString('es-CO')}%`;
-                                }
+                            label: (context) => {
+                                return `Cumplimiento promedio: ${context.raw}%`;
+                            },
+                            afterLabel: (context) => {
+                                const suma = context.dataset.sumas[context.dataIndex];
+                                return `Suma total: ${suma.toLocaleString('es-CO')}%`;
                             }
                         }
                     }
                 }
-            });
-        }
+            }
+        });
+    }
 
 
         function crearGraficosConsolidados() {
