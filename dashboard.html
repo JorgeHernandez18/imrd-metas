@@ -328,24 +328,6 @@
             color: white;
         }
         
-        .link-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: linear-gradient(135deg, var(--azul), #0470a8);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .link-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(5, 140, 205, 0.4);
-        }
         
         .section-divider {
             margin: 3rem 0;
@@ -561,7 +543,6 @@
                                 <th>Meta Acumulada</th>
                                 <th>Cumplimiento</th>
                                 <th>Estado</th>
-                                <th>Evidencias</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-infra">
@@ -715,7 +696,6 @@
                                 <small>${item.metaPorcentaje}%</small>
                             </td>
                             <td>${getStatusBadge(item.metaPorcentaje)}</td>
-                            <td><a href="${item.link}" target="_blank" class="link-button">📁 Ver Evidencias</a></td>
                         </tr>
                     `;
                     tbody.innerHTML += row;
@@ -1090,50 +1070,6 @@
         }
 
 
-        
-
-
-        /* function crearGraficoComparacionInfra() {
-            const unidades = Object.keys(infraData);
-            const metasProgramadas = unidades.map(u => 
-                infraData[u].reduce((sum, item) => sum + item.metaProgramada, 0)
-            );
-            const totalesAcumulados = unidades.map(u => 
-                infraData[u].reduce((sum, item) => sum + item.totalMetaAcumulada, 0)
-            );
-
-            const ctx = document.getElementById('chart-infra-comparacion').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: unidades,
-                    datasets: [
-                        {
-                            label: 'Meta Programada',
-                            data: metasProgramadas,
-                            backgroundColor: colors.rojo,
-                            borderRadius: 8
-                        },
-                        {
-                            label: 'Meta Acumulada',
-                            data: totalesAcumulados,
-                            backgroundColor: colors.verde,
-                            borderRadius: 8
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    }
-                }
-            });
-        } */
-
         function crearGraficoComparacionInfra() {
         const UMBRAL = 100;
 
@@ -1201,7 +1137,7 @@
                 labels: unidades,
                 datasets: [{
                     data: promedios,
-                    sumas: sumas, // 👈 propiedad personalizada para el tooltip
+                    sumas: sumas, // propiedad personalizada para el tooltip
                     backgroundColor: [
                         colors.rojo,
                         colors.verde,
