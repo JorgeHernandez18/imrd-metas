@@ -16,8 +16,8 @@
       {
         "programa": "ESTIMULOS(CONVENIOS)",
         "metaProgramada": 20,
-        "totalAcumulado": 35,
-        "metaPorcentaje": 175
+        "totalAcumulado": 43,
+        "metaPorcentaje": 215
       },
       {
         "programa": "ASISTENCIA A ORGANISMOS DEPORTIVOS",
@@ -40,7 +40,7 @@
         "metaPorcentaje": 136.7
       },
       {
-        "programa": "POBLACIÓN CON HABILIDADES  ESPECIALES (DISCAPACIDAD)",
+        "programa": " DISCAPACIDAD",
         "metaProgramada": 1000,
         "totalAcumulado": 4119,
         "metaPorcentaje": 411.9
@@ -71,33 +71,9 @@
       },
       {
         "programa": "\"JUEGOS Y COMPETENCIAS (INTERCOLEGIADOS, INTERCOMUNALES E INTERCORREGIMIENTOS)\"",
-        "metaProgramada": 16000,
+        "metaProgramada": 12839,
         "totalAcumulado": 14257,
-        "metaPorcentaje": 89.1
-      },
-      {
-        "programa": "EVENTOS DE CAPACITACIÓN",
-        "metaProgramada": 9,
-        "totalAcumulado": 8,
-        "metaPorcentaje": 88.9
-      },
-      {
-        "programa": "PERSONAS BENEFICIADAS(capacitación)",
-        "metaProgramada": 400,
-        "totalAcumulado": 795,
-        "metaPorcentaje": 198.8
-      },
-      {
-        "programa": "EVENTOS  RECREATIVOS",
-        "metaProgramada": 8,
-        "totalAcumulado": 7,
-        "metaPorcentaje": 87.5
-      },
-      {
-        "programa": "PERSONAS BENEFICIADAS",
-        "metaProgramada": 2000,
-        "totalAcumulado": 3175,
-        "metaPorcentaje": 158.8
+        "metaPorcentaje": 111
       }
     ],
     "265": [
@@ -116,8 +92,8 @@
       {
         "programa": "NNAJ",
         "metaProgramada": 4000,
-        "totalAcumulado": 3626,
-        "metaPorcentaje": 90.7
+        "totalAcumulado": 4012,
+        "metaPorcentaje": 100.3
       }
     ]
   },
@@ -126,7 +102,7 @@
       {
         "programa": "Coliseos adecuados",
         "metaProgramada": 1,
-        "totalMetaAcumulada": 1,
+        "totalMetaAcumulada": 0,
         "metaPorcentaje": 100,
         "link": "https://drive.google.com/drive/folders/1IHdx08juGoLWCmvzxTP1DV9UGCYexKgf"
       },
@@ -142,8 +118,8 @@
       {
         "programa": "Parques recreativos mantenidos",
         "metaProgramada": 4,
-        "totalMetaAcumulada": 6,
-        "metaPorcentaje": 150,
+        "totalMetaAcumulada": 9,
+        "metaPorcentaje": 225,
         "link": "Parques recreativos mantenidos - Todos los archivos - Archivos - IMRD - Instituto Municipal de Recreacion y Deporte"
       },
       {
