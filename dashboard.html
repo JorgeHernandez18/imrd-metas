@@ -411,7 +411,6 @@
             <div class="tabs">
                 <button class="tab active" onclick="switchTab('deportes')">🏃 Deportes</button>
                 <button class="tab" onclick="switchTab('infraestructura')">🏗️ Infraestructura</button>
-                <button class="tab" onclick="switchTab('consolidado')">📈 Consolidado</button>
             </div>
             
             <!-- TAB DEPORTES -->
@@ -570,48 +569,6 @@
                     </table>
                 </div>
             </div>
-            
-            <!-- TAB CONSOLIDADO -->
-            <div id="consolidado" class="tab-content">
-                <div class="summary-cards">
-                    <div class="card">
-                        <div class="card-icon" style="background: linear-gradient(135deg, var(--negro), #333);">🎯</div>
-                        <h3>Meta Global Programada</h3>
-                        <div class="card-value" id="consolidado-meta-total">0</div>
-                        <div class="card-subtitle">Deportes + Infraestructura</div>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon" style="background: linear-gradient(135deg, var(--verde), #06c22d);">✅</div>
-                        <h3>Total Acumulado Global</h3>
-                        <div class="card-value" id="consolidado-acumulado-total">0</div>
-                        <div class="card-subtitle">Año 2025</div>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon" style="background: linear-gradient(135deg, var(--azul), #0470a8);">📊</div>
-                        <h3>Cumplimiento Global</h3>
-                        <div class="card-value" id="consolidado-promedio">0%</div>
-                        <div class="card-subtitle">Promedio institucional</div>
-                    </div>
-                </div>
-                
-                <div class="chart-grid">
-                    <div class="chart-container">
-                        <h3 class="chart-title">Deportes vs Infraestructura</h3>
-                        <canvas id="chart-consolidado-comparacion"></canvas>
-                    </div>
-                    <div class="chart-container">
-                        <h3 class="chart-title">Distribución Global de Cumplimiento</h3>
-                        <canvas id="chart-consolidado-dona"></canvas>
-                    </div>
-                </div>
-                
-                <div class="chart-grid">
-                    <div class="chart-container" style="grid-column: 1 / -1;">
-                        <h3 class="chart-title">Todos los BPIN - Vista General</h3>
-                        <canvas id="chart-consolidado-todas"></canvas>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -712,23 +669,6 @@
             document.getElementById('infra-promedio').textContent = promedio + '%';
         }
 
-        function calcularConsolidado() {
-            const deportesMeta = parseInt(document.getElementById('deportes-meta-total').textContent.replace(/,/g, ''));
-            const deportesAcum = parseInt(document.getElementById('deportes-acumulado-total').textContent.replace(/,/g, ''));
-            const deportesProm = parseFloat(document.getElementById('deportes-promedio').textContent);
-
-            const infraMeta = parseInt(document.getElementById('infra-meta-total').textContent.replace(/,/g, ''));
-            const infraAcum = parseInt(document.getElementById('infra-acumulado-total').textContent.replace(/,/g, ''));
-            const infraProm = parseFloat(document.getElementById('infra-promedio').textContent);
-
-            const metaTotal = deportesMeta + infraMeta;
-            const acumTotal = deportesAcum + infraAcum;
-            const promTotal = ((deportesProm + infraProm) / 2).toFixed(1);
-
-            document.getElementById('consolidado-meta-total').textContent = metaTotal.toLocaleString();
-            document.getElementById('consolidado-acumulado-total').textContent = acumTotal.toLocaleString();
-            document.getElementById('consolidado-promedio').textContent = promTotal + '%';
-        }
 
         function llenarTablaDeportes() {
             const tbody = document.getElementById('tbody-deportes');
@@ -1316,128 +1256,21 @@
         });
     }
 
-
-        function crearGraficosConsolidados() {
-            const deportesMeta = parseInt(document.getElementById('deportes-meta-total').textContent.replace(/,/g, ''));
-            const deportesAcum = parseInt(document.getElementById('deportes-acumulado-total').textContent.replace(/,/g, ''));
-            const infraMeta = parseInt(document.getElementById('infra-meta-total').textContent.replace(/,/g, ''));
-            const infraAcum = parseInt(document.getElementById('infra-acumulado-total').textContent.replace(/,/g, ''));
-
-            const ctx1 = document.getElementById('chart-consolidado-comparacion').getContext('2d');
-            new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: ['Deportes', 'Infraestructura'],
-                    datasets: [
-                        {
-                            label: 'Meta Programada',
-                            data: [deportesMeta, infraMeta],
-                            backgroundColor: colors.azul,
-                            borderRadius: 8
-                        },
-                        {
-                            label: 'Total Acumulado',
-                            data: [deportesAcum, infraAcum],
-                            backgroundColor: colors.verde,
-                            borderRadius: 8
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        }
-                    }
-                }
-            });
-
-            const ctx2 = document.getElementById('chart-consolidado-dona').getContext('2d');
-            new Chart(ctx2, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Deportes', 'Infraestructura'],
-                    datasets: [{
-                        data: [deportesAcum, infraAcum],
-                        backgroundColor: [colors.azul, colors.rojo],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-
-            const todasUnidades = [...Object.keys(deportesData), ...Object.keys(infraData)];
-            const todasMetasAcumuladas = [
-                ...Object.keys(deportesData).map(u => 
-                    deportesData[u].reduce((sum, item) => sum + item.totalAcumulado, 0)
-                ),
-                ...Object.keys(infraData).map(u => 
-                    infraData[u].reduce((sum, item) => sum + item.totalMetaAcumulada, 0)
-                )
-            ];
-
-            const ctx3 = document.getElementById('chart-consolidado-todas').getContext('2d');
-            new Chart(ctx3, {
-                type: 'bar',
-                data: {
-                    labels: todasUnidades,
-                    datasets: [{
-                        label: 'Total Acumulado por Unidad',
-                        data: todasMetasAcumuladas,
-                        backgroundColor: [
-                            colors.azul,
-                            colors.verde,
-                            colors.amarillo,
-                            colors.rojo,
-                            colors.negro,
-                            '#ff6b6b',
-                            '#4ecdc4',
-                            '#95e1d3',
-                            '#f38181'
-                        ],
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    }
-                }
-            });
-        }
-
         function inicializarDashboard() {
             calcularTotalesDeportes();
             calcularTotalesInfra();
-            calcularConsolidado();
-            
+
             llenarTablaDeportes();
             llenarTablaInfra();
-            
+
             crearGraficosDeportesIndividuales();
             crearGraficosInfraIndividuales();
-            
+
             crearGraficosComparacionDeportes();
             crearGraficoCumplimientoDeportes();
-            
+
             crearGraficoComparacionInfra();
             crearGraficoCumplimientoInfra();
-            
-            crearGraficosConsolidados();
         }
     </script>
 </body>
