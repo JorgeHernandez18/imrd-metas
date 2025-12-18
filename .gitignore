@@ -1,3 +1,5 @@
+node_modules
 *.xlsx
+package*
 *.md
 .DS_Store

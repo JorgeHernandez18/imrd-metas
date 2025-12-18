@@ -1,0 +1,215 @@
+{
+  "deportesData": {
+    "208": [
+      {
+        "programa": "OBSERVATORIO DEPORTIVO",
+        "metaProgramada": 90,
+        "totalAcumulado": 90,
+        "metaPorcentaje": 100
+      },
+      {
+        "programa": "CIENCIAS APLICADAS",
+        "metaProgramada": 25,
+        "totalAcumulado": 25,
+        "metaPorcentaje": 100
+      },
+      {
+        "programa": "ESTIMULOS(CONVENIOS)",
+        "metaProgramada": 20,
+        "totalAcumulado": 35,
+        "metaPorcentaje": 175
+      },
+      {
+        "programa": "ASISTENCIA A ORGANISMOS DEPORTIVOS",
+        "metaProgramada": 3,
+        "totalAcumulado": 3,
+        "metaPorcentaje": 100
+      }
+    ],
+    "209": [
+      {
+        "programa": "\"HEVS HABITOS Y ESTILOS DE VIDA SALUDABLE\"",
+        "metaProgramada": 3000,
+        "totalAcumulado": 3656,
+        "metaPorcentaje": 121.9
+      },
+      {
+        "programa": "ADULTO MAYOR",
+        "metaProgramada": 3000,
+        "totalAcumulado": 4100,
+        "metaPorcentaje": 136.7
+      },
+      {
+        "programa": "POBLACIÓN CON HABILIDADES  ESPECIALES (DISCAPACIDAD)",
+        "metaProgramada": 1000,
+        "totalAcumulado": 4119,
+        "metaPorcentaje": 411.9
+      },
+      {
+        "programa": "DEPORTE SOCIAL Y COMUNITARIO",
+        "metaProgramada": 4000,
+        "totalAcumulado": 9056,
+        "metaPorcentaje": 226.4
+      },
+      {
+        "programa": "CICLOVIAS RECREATIVAS",
+        "metaProgramada": 7000,
+        "totalAcumulado": 7812,
+        "metaPorcentaje": 111.6
+      },
+      {
+        "programa": "RECREACIÓN",
+        "metaProgramada": 3000,
+        "totalAcumulado": 21102,
+        "metaPorcentaje": 703.4
+      },
+      {
+        "programa": "CLUBES DEPORTIVOS",
+        "metaProgramada": 2000,
+        "totalAcumulado": 3473,
+        "metaPorcentaje": 173.7
+      },
+      {
+        "programa": "\"JUEGOS Y COMPETENCIAS (INTERCOLEGIADOS, INTERCOMUNALES E INTERCORREGIMIENTOS)\"",
+        "metaProgramada": 16000,
+        "totalAcumulado": 14257,
+        "metaPorcentaje": 89.1
+      },
+      {
+        "programa": "EVENTOS DE CAPACITACIÓN",
+        "metaProgramada": 9,
+        "totalAcumulado": 8,
+        "metaPorcentaje": 88.9
+      },
+      {
+        "programa": "PERSONAS BENEFICIADAS(capacitación)",
+        "metaProgramada": 400,
+        "totalAcumulado": 795,
+        "metaPorcentaje": 198.8
+      },
+      {
+        "programa": "EVENTOS  RECREATIVOS",
+        "metaProgramada": 8,
+        "totalAcumulado": 7,
+        "metaPorcentaje": 87.5
+      },
+      {
+        "programa": "PERSONAS BENEFICIADAS",
+        "metaProgramada": 2000,
+        "totalAcumulado": 3175,
+        "metaPorcentaje": 158.8
+      }
+    ],
+    "265": [
+      {
+        "programa": "CENTROS DE ATENCIÓN DEPORTIVA",
+        "metaProgramada": 3,
+        "totalAcumulado": 4,
+        "metaPorcentaje": 133.3
+      },
+      {
+        "programa": "APOYO A ESCUELAS",
+        "metaProgramada": 20,
+        "totalAcumulado": 39,
+        "metaPorcentaje": 195
+      },
+      {
+        "programa": "NNAJ",
+        "metaProgramada": 4000,
+        "totalAcumulado": 3626,
+        "metaPorcentaje": 90.7
+      }
+    ]
+  },
+  "infraData": {
+    "201": [
+      {
+        "programa": "Coliseos adecuados",
+        "metaProgramada": 1,
+        "totalMetaAcumulada": 1,
+        "metaPorcentaje": 100,
+        "link": "https://drive.google.com/drive/folders/1IHdx08juGoLWCmvzxTP1DV9UGCYexKgf"
+      },
+      {
+        "programa": "Estadios mantenidos",
+        "metaProgramada": 1,
+        "totalMetaAcumulada": 1,
+        "metaPorcentaje": 100,
+        "link": "https://drive.google.com/drive/folders/1SiGIc0fpb0XfIz17kTmyxWsm0gOKMoej"
+      }
+    ],
+    "207": [
+      {
+        "programa": "Parques recreativos mantenidos",
+        "metaProgramada": 4,
+        "totalMetaAcumulada": 6,
+        "metaPorcentaje": 150,
+        "link": "Parques recreativos mantenidos - Todos los archivos - Archivos - IMRD - Instituto Municipal de Recreacion y Deporte"
+      },
+      {
+        "programa": "Estudios y diseños elaborados",
+        "metaProgramada": 1,
+        "totalMetaAcumulada": 1,
+        "metaPorcentaje": 100,
+        "link": "Estudios y diseños de infraestructura recreo-deportiva - Todos los archivos - Archivos - IMRD - Instituto Municipal de Recreacion y Deporte"
+      },
+      {
+        "programa": "Parques adecuados",
+        "metaProgramada": 2,
+        "totalMetaAcumulada": 2,
+        "metaPorcentaje": 100,
+        "link": "Parques recreativos adecuados - Todos los archivos - Archivos - IMRD - Instituto Municipal de Recreacion y Deporte"
+      },
+      {
+        "programa": "Canchas multifuncionales adecuadas",
+        "metaProgramada": 2,
+        "totalMetaAcumulada": 7,
+        "metaPorcentaje": 350,
+        "link": "Canchas multifuncionales adecuadas - Todos los archivos - Archivos - IMRD - Instituto Municipal de Recreacion y Deporte"
+      }
+    ],
+    "214": [
+      {
+        "programa": "Canchas multifuncionales adecuadas",
+        "metaProgramada": 1,
+        "totalMetaAcumulada": 0,
+        "metaPorcentaje": 60,
+        "link": "https://nube.imrd-cucuta.gov.co/index.php/apps/files/files/1552851?dir=/PROYECTOS%20DE%20INVERSI%C3%93N%20VIGENCIA%202025/PROYECTO%20BPIN%20214"
+      }
+    ],
+    "217": [
+      {
+        "programa": "Canchas multifuncionales construidas",
+        "metaProgramada": 1,
+        "totalMetaAcumulada": 0,
+        "metaPorcentaje": 50,
+        "link": "https://nube.imrd-cucuta.gov.co/index.php/apps/files/files/1552852?dir=/PROYECTOS%20DE%20INVERSI%C3%93N%20VIGENCIA%202025/PROYECTO%20BPIN%20217"
+      }
+    ],
+    "220": [
+      {
+        "programa": "Estudios y diseños elaborados",
+        "metaProgramada": 1,
+        "totalMetaAcumulada": 1,
+        "metaPorcentaje": 100,
+        "link": "https://drive.google.com/drive/folders/1fSALKTFGqC-JgI7ozrfCes_9KwmWV_MP?usp=drive_link"
+      }
+    ],
+    "007": [
+      {
+        "programa": "Parques recreativos adecuados",
+        "metaProgramada": 75,
+        "totalMetaAcumulada": 75,
+        "metaPorcentaje": 100,
+        "link": "https://nube.imrd-cucuta.gov.co/index.php/apps/files/files/1552989?dir=/PROYECTOS%20DE%20INVERSI%C3%93N%20VIGENCIA%202025/PROYECTO%20BPIN%20007/Parques%20recreativos%20adecuados"
+      },
+      {
+        "programa": "Canchas Multifuncionales adecuadas",
+        "metaProgramada": 75,
+        "totalMetaAcumulada": 75,
+        "metaPorcentaje": 100,
+        "link": "Canchas multifuncionales adecuadas - Todos los archivos - Archivos - IMRD - Instituto Municipal de Recreacion y Deporte"
+      }
+    ]
+  }
+}

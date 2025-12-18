@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IMRD - Deportes e Infraestructura</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2"></script>
@@ -35,142 +34,6 @@
             overflow-x: hidden;
         }
         
-        .upload-section {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-        
-        .upload-section h2 {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--rojo);
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-        
-        .upload-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .upload-card {
-            border: 3px dashed var(--azul);
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            background: linear-gradient(135deg, rgba(5, 140, 205, 0.05), rgba(8, 157, 47, 0.05));
-        }
-        
-        .upload-card:hover {
-            border-color: var(--verde);
-            background: linear-gradient(135deg, rgba(5, 140, 205, 0.1), rgba(8, 157, 47, 0.1));
-            transform: translateY(-5px);
-        }
-        
-        .upload-card h3 {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--negro);
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-        }
-        
-        .upload-card p {
-            color: #666;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-        
-        .file-input-wrapper {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-        }
-        
-        .file-input-wrapper input[type="file"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-        
-        .upload-button {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--azul), var(--verde));
-            color: white;
-            border-radius: 12px;
-            font-weight: 600;
-            font-family: 'Montserrat', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(5, 140, 205, 0.3);
-        }
-        
-        .upload-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(5, 140, 205, 0.4);
-        }
-        
-        .file-status {
-            margin-top: 1rem;
-            padding: 0.8rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: none;
-        }
-        
-        .file-status.success {
-            background: rgba(8, 157, 47, 0.1);
-            color: var(--verde);
-            border: 2px solid var(--verde);
-            display: block;
-        }
-        
-        .file-status.error {
-            background: rgba(193, 10, 32, 0.1);
-            color: var(--rojo);
-            border: 2px solid var(--rojo);
-            display: block;
-        }
-        
-        .load-button {
-            display: block;
-            width: 300px;
-            margin: 2rem auto;
-            padding: 1.2rem 2rem;
-            background: linear-gradient(135deg, var(--rojo), #950815);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            font-family: 'Montserrat', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(193, 10, 32, 0.3);
-        }
-        
-        .load-button:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(193, 10, 32, 0.4);
-        }
-        
-        .load-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        #dashboard {
-            display: none;
-        }
         
         .header {
             background: linear-gradient(135deg, var(--rojo) 0%, #950815 100%);
@@ -538,41 +401,6 @@
     </style>
 </head>
 <body>
-    <div class="upload-section">
-        <h2>📁 Cargar Archivos Excel</h2>
-        <p style="color: #666; margin-bottom: 2rem;">Selecciona los dos archivos de Excel para generar el dashboard</p>
-        
-        <div class="upload-grid">
-            <div class="upload-card">
-                <h3>🏃 Archivo Deportes</h3>
-                <p>INFORME 1 CORTE_30 DE OCTUBRE_2025_DEPORTES.xlsx</p>
-                <div class="file-input-wrapper">
-                    <label class="upload-button">
-                        📤 Seleccionar Archivo
-                        <input type="file" id="deportes-file" accept=".xlsx,.xls" />
-                    </label>
-                </div>
-                <div class="file-status" id="deportes-status"></div>
-            </div>
-            
-            <div class="upload-card">
-                <h3>🏗️ Archivo Infraestructura</h3>
-                <p>INFORME 1 CORTE_30 DE OCTUBRE_2025 infra.xlsx</p>
-                <div class="file-input-wrapper">
-                    <label class="upload-button">
-                        📤 Seleccionar Archivo
-                        <input type="file" id="infra-file" accept=".xlsx,.xls" />
-                    </label>
-                </div>
-                <div class="file-status" id="infra-status"></div>
-            </div>
-        </div>
-        
-        <button class="load-button" id="load-dashboard" disabled>
-            🚀 Generar Dashboard
-        </button>
-    </div>
-    
     <div id="dashboard">
         <div class="header">
             <h1>📊 IMRD</h1>
@@ -798,136 +626,26 @@
 
         let deportesData = {};
         let infraData = {};
-        let deportesLoaded = false;
-        let infraLoaded = false;
 
-        // Manejo de carga de archivos
-        document.getElementById('deportes-file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                readExcelFile(file, 'deportes');
+        // Cargar datos automáticamente desde el archivo JSON
+        async function cargarDatos() {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+
+                deportesData = data.deportesData;
+                infraData = data.infraData;
+
+                // Inicializar dashboard automáticamente
+                inicializarDashboard();
+            } catch (error) {
+                console.error('Error al cargar los datos:', error);
+                alert('Error al cargar los datos del dashboard. Por favor, recarga la página.');
             }
-        });
-
-        document.getElementById('infra-file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                readExcelFile(file, 'infra');
-            }
-        });
-
-        function readExcelFile(file, tipo) {
-            const reader = new FileReader();
-            const statusEl = document.getElementById(`${tipo}-status`);
-            
-            statusEl.textContent = 'Cargando...';
-            statusEl.className = 'file-status';
-            statusEl.style.display = 'block';
-            
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    if (tipo === 'deportes') {
-                        procesarDeportes(workbook);
-                        deportesLoaded = true;
-                        statusEl.textContent = '✓ Archivo cargado correctamente';
-                        statusEl.className = 'file-status success';
-                    } else {
-                        procesarInfra(workbook);
-                        infraLoaded = true;
-                        statusEl.textContent = '✓ Archivo cargado correctamente';
-                        statusEl.className = 'file-status success';
-                    }
-                    
-                    // Habilitar botón si ambos archivos están cargados
-                    if (deportesLoaded && infraLoaded) {
-                        document.getElementById('load-dashboard').disabled = false;
-                    }
-                } catch (error) {
-                    statusEl.textContent = '✗ Error al procesar el archivo: ' + error.message;
-                    statusEl.className = 'file-status error';
-                }
-            };
-            
-            reader.onerror = function() {
-                statusEl.textContent = '✗ Error al leer el archivo';
-                statusEl.className = 'file-status error';
-            };
-            
-            reader.readAsArrayBuffer(file);
         }
 
-        function procesarDeportes(workbook) {
-            const hojas = ['209', '265', '208'];
-            deportesData = {};
-            
-            hojas.forEach(hoja => {
-                if (workbook.SheetNames.includes(hoja)) {
-                    const worksheet = workbook.Sheets[hoja];
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                    
-                    deportesData[hoja] = jsonData.map(row => {
-                        // Buscar las columnas independientemente de mayúsculas/minúsculas
-                        const programa = row['PROGRAMA'] || row['Programa'] || row['programa'] || '';
-                        const metaProgramada = parseInt(row['META PROGRAMADA'] || row['Meta Programada'] || row['meta programada'] || 0);
-                        const totalAcumulado = parseInt(row['TOTAL ACUMULADO AÑO'] || row['Total Acumulado Año'] || row['total acumulado año'] || 0);
-                        let metaPorcentaje = parseFloat(row['META %'] || row['Meta %'] || row['meta %'] || 0);
-                        
-                        // Si el porcentaje está en decimal (0.9), convertir a porcentaje (90)
-                        if (metaPorcentaje < 1 && metaPorcentaje > 0) {
-                            metaPorcentaje = metaPorcentaje * 100;
-                        }
-                        
-                        return {
-                            programa: programa,
-                            metaProgramada: metaProgramada,
-                            totalAcumulado: totalAcumulado,
-                            metaPorcentaje: parseFloat(metaPorcentaje.toFixed(1))
-                        };
-                    });
-                }
-            });
-        }
-
-        function procesarInfra(workbook) {
-            const hojas = ['207', '220', '201', '214', '217', '007'];
-            infraData = {};
-            
-            hojas.forEach(hoja => {
-                if (workbook.SheetNames.includes(hoja)) {
-                    const worksheet = workbook.Sheets[hoja];
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                    
-                    infraData[hoja] = jsonData.map(row => {
-                        const programa = row['PROGRAMA'] || row['Programa'] || row['programa'] || '';
-                        const metaProgramada = parseInt(row['META PROGRAMADA'] || row['Meta Programada'] || row['meta programada'] || 0);
-                        const totalMetaAcumulada = parseInt(row['TOTAL META ACUMULADA'] || row['Total Meta Acumulada'] || row['total meta acumulada'] || 0);
-                        let metaPorcentaje = parseFloat(row['META %'] || row['Meta %'] || row['meta %'] || 0);
-                        const link = row['LINK DE ACCESO DRIVE( EVIDENCIAS)'] || row['Link de acceso drive'] || row['link'] || '#';
-                        
-                        if (metaPorcentaje < 1 && metaPorcentaje > 0) {
-                            metaPorcentaje = metaPorcentaje * 100;
-                        }
-                        
-                        return {
-                            programa: programa,
-                            metaProgramada: metaProgramada,
-                            totalMetaAcumulada: totalMetaAcumulada,
-                            metaPorcentaje: parseFloat(metaPorcentaje.toFixed(1)),
-                            link: link
-                        };
-                    });
-                }
-            });
-        }
-
-        document.getElementById('load-dashboard').addEventListener('click', function() {
-            document.querySelector('.upload-section').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            inicializarDashboard();
-        });
+        // Cargar datos cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', cargarDatos);
 
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => {
